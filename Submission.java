@@ -22,7 +22,6 @@ public class Submission {
       public Node(int val) {
 
         this.val = val;
-
         this.left = null;
         this.right = null;
         this.count = 1;
