@@ -93,6 +93,15 @@ public class Submission {
       return minNodeHelper(node.left);
     }
 
+    int minValue(Node root) {
+      int minv = root.val;
+      while (root.left != null) {
+        minv = root.left.val;
+        root = root.left;
+      }
+      return minv;
+    }
+
     public void printPreOrder() {
       printPreOrderHelper(root);
     }
@@ -131,6 +140,60 @@ public class Submission {
       printPostOrderHelper(node.right);
       System.out.print(node.val + " " + "(" + node.count + ")");
     }
+
+    public void deleteNode(int val) {
+
+      root = deleteNodeHelper(root, val);
+    }
+
+    // Function to delete a given key from the BST
+    public Node deleteNodeHelper(Node root, int val) {
+
+      if (root == null) {
+        return root;
+      } else if (root.val > val) {
+        root.left = deleteNodeHelper(root.left, val);
+      } else {
+        root.right = deleteNodeHelper(root.right, val);
+      }
+
+      if (root.val == val) {
+        if (root.count > 1) {
+          root.count--;
+          return root;
+        } else {
+          if (root.left == null && root.right == null) {
+            return null;
+          } else if (root.left == null) {
+            return root.right;
+          } else if (root.right == null) {
+            return root.left;
+          }
+          // node with two children: Get the inorder successor (smallest node on the
+          // right)
+          if (root.left != null && root.right != null) {
+            // First strat get the smallest on the right subtree
+            Node largestLeftTree = maxNodeHelper(root.left);
+            root.val = largestLeftTree.val;
+            root.left = deleteNodeHelper(root.left, largestLeftTree.val);
+          } else {
+            // Seconed strat get the largest on the left subtree
+            Node smallestRightTree = minNodeHelper(root.right);
+            root.val = smallestRightTree.val;
+            root.right = deleteNodeHelper(root.right, smallestRightTree.val);
+          }
+
+          // Seconed strat get the largest on the left subtree
+          // Node maxLeftNode = maxNodeHelper(root.left);
+          // root.val = maxLeftNode.val;
+          // root.left = deleteNodeHelper(root.left, maxLeftNode.val);
+
+        }
+      }
+
+      return root;
+    }
+
   }
 
   public static void main(String[] args) {
@@ -139,7 +202,6 @@ public class Submission {
 
     while (scanner.hasNext()) {
       int response = scanner.nextInt();
-
       switch (response) {
         case 1:
           int elementToInsert = scanner.nextInt();
@@ -172,7 +234,9 @@ public class Submission {
           System.out.println();
           break;
         case 8:
-          System.out.println("Deletion feature not implemented yet.");
+          int elementToDelete = scanner.nextInt();
+          binarySearchTree.deleteNode(elementToDelete);
+
           break;
         case 0:
           scanner.close();
